@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Cores</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Conversor de Cores</h1>
+    </header>
+    <main>
+        <div class="container">
+            <aside class="left-panel">
+                <h2>Selecionar Sistema de Cores</h2>
+                <select id="color-system">
+                    <option value="rgb">RGB</option>
+                    <option value="cmyk">CMYK</option>
+                    <option value="hsl">HSL</option>
+                    <option value="hsv">HSV</option>
+                </select>
+                <div id="inputs">
+                    <!-- Campos dinâmicos aqui -->
+                </div>
+            </aside>
+            <div class="color-palette palette-panel">
+                <h3>Cores do Arco-Íris</h3>
+                <div class="rainbow-colors">
+                    <div class="color-swatch" data-color="#FF0000" style="background-color: #FF0000;"></div>
+                    <div class="color-swatch" data-color="#FFA500" style="background-color: #FFA500;"></div>
+                    <div class="color-swatch" data-color="#FFFF00" style="background-color: #FFFF00;"></div>
+                    <div class="color-swatch" data-color="#008000" style="background-color: #008000;"></div>
+                    <div class="color-swatch" data-color="#0000FF" style="background-color: #0000FF;"></div>
+                    <div class="color-swatch" data-color="#4B0082" style="background-color: #4B0082;"></div>
+                    <div class="color-swatch" data-color="#800080" style="background-color: #800080;"></div>
+                </div>
+            </div>
+            <section class="center-panel">
+                <h2>Área de Pintura</h2>
+                <canvas id="paint-canvas" width="600" height="400"></canvas>
+                <button id="clear-canvas">Limpar</button>
+            </section>
+            <aside class="right-panel">
+                <h2>Preview da Cor</h2>
+                <div id="color-preview"></div>
+                <input type="text" id="color-code" value="#FF0000">
+                <h3>Outros Sistemas</h3>
+                <table id="color-table">
+                    <thead>
+                        <tr>
+                            <th>Sistema</th>
+                            <th>Valores</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Linhas dinâmicas -->
+                    </tbody>
+                </table>
+            </aside>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
