@@ -1,4 +1,3 @@
-// Elementos DOM
 const colorSystemSelect = document.getElementById('color-system');
 const inputsDiv = document.getElementById('inputs');
 const colorPreview = document.getElementById('color-preview');
@@ -7,9 +6,42 @@ const colorTableBody = document.getElementById('color-table').querySelector('tbo
 const canvas = document.getElementById('paint-canvas');
 const ctx = canvas.getContext('2d');
 const clearButton = document.getElementById('clear-canvas');
+const undoButton = document.getElementById('undo');
+const redoButton = document.getElementById('redo');
+const eraserButton = document.getElementById('eraser');
+const brushButton = document.getElementById('brush');
+
+// Histórico para undo/redo
+let history = [];
+let historyIndex = -1;
+let isErasing = false;
+
+function updateStroke() {
+    ctx.strokeStyle = isErasing ? '#ffffff' : `rgb(${currentRgb.r}, ${currentRgb.g}, ${currentRgb.b})`;
+    ctx.lineWidth = isErasing ? 18 : 4.5;
+    canvas.style.cursor = isErasing
+        ? "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23334155\" stroke-width=\"2\"><path d=\"M4 14L8 18 18 8 14 4 4 14Z\"/></svg>') 12 12, auto"
+        : "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23334155\" stroke-width=\"2\"><path d=\"M4 14L8 10 16 2 18 4 10 12 8 16 4 14Z\"/></svg>') 12 12, auto";
+}
+
+function saveToHistory() {
+    history = history.slice(0, historyIndex + 1);
+    history.push(canvas.toDataURL());
+    historyIndex++;
+}
+
+function loadFromHistory() {
+    if (history[historyIndex]) {
+        const img = new Image();
+        img.onload = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0);
+        };
+        img.src = history[historyIndex];
+    }
+}
 const colorSwatches = document.querySelectorAll('.color-swatch');
 
-// Constantes
 const COLOR_SYSTEMS = {
     rgb: { labels: ['R', 'G', 'B'], fullLabels: ['Red', 'Green', 'Blue'], maxValues: [255, 255, 255] },
     cmyk: { labels: ['C', 'M', 'Y', 'K'], fullLabels: ['Cyan', 'Magenta', 'Yellow', 'Black'], maxValues: [100, 100, 100, 100] },
@@ -56,7 +88,7 @@ const colorConverters = {
     }
 };
 
-// Funções de conversão de cores (mantidas para compatibilidade)
+// Funções de conversão de cores
 function rgbToHsl(r, g, b) {
     r /= 255; g /= 255; b /= 255;
     const max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -155,7 +187,6 @@ function cmykToRgb(c, m, y, k) {
     return [Math.round(r), Math.round(g), Math.round(b)];
 }
 
-// Atualizar campos de entrada
 function updateInputs() {
     inputsDiv.innerHTML = '';
     const system = COLOR_SYSTEMS[currentSystem];
@@ -196,7 +227,6 @@ function updateInputs() {
     });
 }
 
-// Atualizar cor e preview
 function updateColor() {
     const inputs = inputsDiv.querySelectorAll('.input-number');
     const values = Array.from(inputs).map(input => parseFloat(input.value) || 0);
@@ -205,15 +235,13 @@ function updateColor() {
     updateUI();
 }
 
-// Atualizar interface
 function updateUI() {
     colorPreview.style.backgroundColor = `rgb(${currentRgb.r}, ${currentRgb.g}, ${currentRgb.b})`;
     colorCode.value = rgbToHex(currentRgb.r, currentRgb.g, currentRgb.b);
-    ctx.strokeStyle = `rgb(${currentRgb.r}, ${currentRgb.g}, ${currentRgb.b})`;
+    updateStroke();
     updateTable();
 }
 
-// Atualizar tabela
 function updateTable() {
     const rgb = [currentRgb.r, currentRgb.g, currentRgb.b];
     const hsl = rgbToHsl(...rgb);
@@ -243,17 +271,17 @@ function updateTable() {
     });
 }
 
-// Selecionar cor do arco-íris
 function selectRainbowColor(hex) {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
     currentRgb = { r, g, b };
+    isErasing = false;
+    updateStroke();
     updateInputs();
     updateUI();
 }
 
-// Canvas pintura
 let painting = false;
 ctx.lineWidth = 4.5;
 ctx.lineCap = 'round';
@@ -300,10 +328,41 @@ function handleTouch(e) {
 function stopPainting() {
     painting = false;
     ctx.beginPath();
+    saveToHistory();
 }
 
-clearButton.addEventListener('click', () => {
+clearButton.addEventListener('click', (event) => {
+    event.preventDefault();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    saveToHistory();
+});
+
+undoButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (historyIndex > 0) {
+        historyIndex--;
+        loadFromHistory();
+    }
+});
+
+redoButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    if (historyIndex < history.length - 1) {
+        historyIndex++;
+        loadFromHistory();
+    }
+});
+
+eraserButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    isErasing = true;
+    updateStroke();
+});
+
+brushButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    isErasing = false;
+    updateStroke();
 });
 
 // Inicializar
@@ -332,3 +391,4 @@ colorCode.addEventListener('input', (e) => {
 
 updateInputs();
 updateUI();
+saveToHistory();

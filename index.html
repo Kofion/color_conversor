@@ -21,7 +21,6 @@
                     <option value="hsv">HSV</option>
                 </select>
                 <div id="inputs">
-                    <!-- Campos dinâmicos aqui -->
                 </div>
             </aside>
             <div class="color-palette palette-panel">
@@ -37,9 +36,43 @@
                 </div>
             </div>
             <section class="center-panel">
-                <h2>Área de Pintura</h2>
+                <h2>Tela de Pintura</h2>
                 <canvas id="paint-canvas" width="600" height="400"></canvas>
-                <button id="clear-canvas">Limpar</button>
+                <div class="button-group">
+                    <button type="button" id="undo" title="Desfazer">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 5a5 5 0 0 0-7 7"/>
+                            <path d="M5 7l-3 3 3 3"/>
+                        </svg>
+                    </button>
+                    <button type="button" id="redo" title="Refazer">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 5a5 5 0 0 1 7 7"/>
+                            <path d="M11 7l3 3-3 3"/>
+                        </svg>
+                    </button>
+                    <button type="button" id="eraser" title="Borracha">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12L6 15 13 8 10 5 3 12Z"/>
+                            <path d="M9 7l-3 3"/>
+                        </svg>
+                    </button>
+                    <button type="button" id="brush" title="Pincel">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4.5 11.5L8.5 7.5 10.5 9.5 6.5 13.5 4.5 13.5Z"/>
+                            <path d="M10.5 9.5l2-2 1 1-2 2"/>
+                        </svg>
+                    </button>
+                    <button type="button" id="clear-canvas" title="Limpar tudo">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 6h6"/>
+                            <path d="M6 6V4h4v2"/>
+                            <path d="M5 6v8h6V6"/>
+                            <path d="M7.5 8.5v3"/>
+                            <path d="M9.5 8.5v3"/>
+                        </svg>
+                    </button>
+                </div>
             </section>
             <aside class="right-panel">
                 <h2>Preview da Cor</h2>
@@ -55,7 +88,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Linhas dinâmicas -->
                     </tbody>
                 </table>
             </aside>
