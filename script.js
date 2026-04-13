@@ -228,10 +228,17 @@ function updateTable() {
     colorTableBody.innerHTML = '';
     Object.entries(systems).forEach(([sys, data]) => {
         if (sys.toLowerCase() !== currentSystem) {
-            const row = document.createElement('tr');
-            const detailed = data.labels.map((label, i) => `<strong>${label}</strong>: ${data.values[i]}`).join(', ');
-            row.innerHTML = `<td>${sys}</td><td>${detailed}</td>`;
-            colorTableBody.appendChild(row);
+            const numComponents = data.labels.length;
+            // First row with system spanning
+            const firstRow = document.createElement('tr');
+            firstRow.innerHTML = `<td rowspan="${numComponents}">${sys}</td><td><strong>${data.labels[0]}</strong></td><td>${data.values[0]}</td>`;
+            colorTableBody.appendChild(firstRow);
+            // Subsequent rows for other components
+            for (let i = 1; i < numComponents; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td><strong>${data.labels[i]}</strong></td><td>${data.values[i]}</td>`;
+                colorTableBody.appendChild(row);
+            }
         }
     });
 }
